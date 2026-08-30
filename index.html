@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f6fa">
+  <title>健康用药小助手 · 常见不适参考</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-view="intro">
+
+  <div class="app">
+
+    <!-- 顶部栏 -->
+    <div id="topbar" style="display:none">
+      <button id="topBack" aria-label="返回">‹</button>
+      <div class="tb-title">健康用药小助手</div>
+    </div>
+
+    <!-- 进度条 -->
+    <div id="progressBar"></div>
+
+    <!-- ============ 0. 首页 ============ -->
+    <section id="intro">
+      <div class="hero">
+        <div class="logo">🩺</div>
+        <h1>健康用药小助手</h1>
+        <div class="sub">哪里不舒服，点一点<br>告诉你该咋办、能不能自己吃药、要不要去医院</div>
+      </div>
+
+      <div class="label">您的性别（用于腹部等特殊情况判断）</div>
+      <div id="genderBox" class="chips-col"></div>
+
+      <div class="disc">默认按“成年人、既往体健”处理。本工具<strong>仅作科普参考，不能替代医生诊断</strong>；用药请以药品说明和医师/药师意见为准。</div>
+
+      <button id="startBtn" class="btn btn-primary">开始自测</button>
+    </section>
+
+    <!-- ============ 1. 选部位 ============ -->
+    <section id="region" style="display:none">
+      <div class="label">🍎 哪里不舒服？<span class="hint">（可多选）</span></div>
+      <div id="regionGrid" class="region-grid"></div>
+    </section>
+
+    <!-- ============ 2. 选症状 ============ -->
+    <section id="symptom" style="display:none">
+      <div class="label">🤔 具体是什么症状？<span class="hint">（可多选、可叠加）</span></div>
+      <div id="symptomBox" class="sym-wrap"></div>
+    </section>
+
+    <!-- ============ 3. 补充细节 ============ -->
+    <section id="detail" style="display:none">
+      <div class="label">📋 再补充几个细节</div>
+      <div id="detailBox"></div>
+    </section>
+
+    <!-- ============ 4. 结果 ============ -->
+    <section id="result" style="display:none">
+      <div id="resultBox"></div>
+      <div class="result-actions">
+        <button id="addMore" class="btn btn-ghost">添加其他症状</button>
+        <button id="resultBack" class="btn btn-ghost">返回修改</button>
+      </div>
+      <button id="resultRestart" class="btn btn-primary" style="margin-top:10px">重新开始</button>
+    </section>
+
+  </div>
+
+  <!-- 底部主操作栏 -->
+  <div id="bottomBar" style="display:none">
+    <button id="nextBtn" class="btn btn-primary">下一步：选症状</button>
+    <button id="symNext" class="btn btn-primary">下一步：补充细节</button>
+    <button id="detailNext" class="btn btn-primary">生成用药建议</button>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/hospitals.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
