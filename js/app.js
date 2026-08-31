@@ -286,12 +286,10 @@ function renderResult(res) {
       const shopUrl = 'https://www.meituan.com/s/' + encodeURIComponent(kw);
       html += `<div class="med-card">
         <div class="med-head"><a class="med-name" href="${shopUrl}" target="_blank" rel="noopener">${m.name} <span class="buy">去买 ↗</span></a><span class="med-type">${MEDS[m.id].type}</span></div>
-        ${m.alias ? `<div class="med-alias">${m.alias}</div>` : ''}
         <div class="med-intent">用于：${m.intent}</div>
-        <div class="med-form"><b>用法用量：</b>${m.form}</div>
+        <div class="med-form"><b>用法用量：</b>详细见说明书</div>
         <div class="med-ct"><b>别用的情况：</b></div>
         <ul class="ct-list">${m.contraindications.map(c=>`<li>${c}</li>`).join('')}</ul>
-        <div class="med-src">来自症状：${m.source.join('、')}</div>
       </div>`;
     });
   }
