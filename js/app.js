@@ -438,7 +438,9 @@ function updateInstallBtn() {
   btn.style.display = isStandalone() ? 'none' : 'block';
 }
 function bindInstall() {
-  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua) || (window.innerWidth < 800 && !isIOS);
   window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     deferredPrompt = e;
@@ -447,18 +449,22 @@ function bindInstall() {
   window.addEventListener('appinstalled', () => { updateInstallBtn(); });
   $('installBtn').onclick = async () => {
     if (deferredPrompt) {
-      // 安卓 Chrome：直接弹系统安装框
+      // 支持的浏览器（多为 Chrome/Edge）：直接弹系统安装框
       deferredPrompt.prompt();
       const choice = await deferredPrompt.userChoice;
       deferredPrompt = null;
       updateInstallBtn();
     } else if (isIOS) {
       $('installGuideText').innerHTML =
-        '<b>iPhone 安装步骤：</b><br>1. 点 Safari 底部中间的「<b>分享</b>」按钮（方框带向上箭头的图标）；<br>2. 在弹出菜单里往下找，点「<b>添加到主屏幕</b>」；<br>3. 点右上角「<b>添加</b>」，就装好了。<br><br>（苹果系统规定只能用这个方法装，任何网页都不能直接弹安装框。）';
+        '<b>iPhone 安装步骤：</b><br>1. 点 Safari 底部中间的「<b>分享</b>」按钮（方框带向上箭头）；<br>2. 菜单里选「<b>添加到主屏幕</b>」；<br>3. 点右上角「<b>添加</b>」。<br><br>（苹果规定只能这样装，任何网页都不能直接弹安装框。）';
+      $('installGuide').style.display = 'flex';
+    } else if (isAndroid) {
+      $('installGuideText').innerHTML =
+        '<b>安卓手机安装步骤：</b><br>1. 点你浏览器里的「<b>菜单</b>」按钮（一般在右下角或右上角，图标是三个点 / 三条横线）；<br>2. 在菜单里选「<b>添加到主屏幕</b>」或「<b>添加到桌面</b>」；<br>3. 按提示确认，桌面就有图标了。';
       $('installGuide').style.display = 'flex';
     } else {
       $('installGuideText').innerHTML =
-        '<b>安卓安装步骤：</b><br>1. 点浏览器右上角的「<b>⋮</b>」（三个点）菜单；<br>2. 选「<b>添加到主屏幕</b>」或「<b>安装应用</b>」。<br><br>（如果没看到这个选项，多浏览一会儿页面，或用 Chrome 浏览器打开再试。）';
+        '<b>请用手机打开这个网址</b>，再用手机浏览器添加到主屏幕。<br><br>网址：<br><b>https://xieedahuimao.github.io/med-guide/</b>';
       $('installGuide').style.display = 'flex';
     }
   };
