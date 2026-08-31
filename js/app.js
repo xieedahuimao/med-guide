@@ -9,6 +9,27 @@ const state = {
   answers: {},            // symptomId -> { questionId -> value(s) }
 };
 
+/* ---------- 进度保存（刷新不丢） ---------- */
+const STATE_KEY = 'med-guide-state-v1';
+function persist() {
+  try {
+    const data = { gender: state.gender, regionIds: state.regionIds, symptomIds: state.symptomIds, answers: state.answers, view: viewName };
+    localStorage.setItem(STATE_KEY, JSON.stringify(data));
+  } catch (e) {}
+}
+function restoreState() {
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (!raw) return 'intro';
+    const d = JSON.parse(raw);
+    if (d.gender) state.gender = d.gender;
+    if (Array.isArray(d.regionIds)) state.regionIds = d.regionIds;
+    if (Array.isArray(d.symptomIds)) state.symptomIds = d.symptomIds;
+    if (d.answers && typeof d.answers === 'object') state.answers = d.answers;
+    return (d.view && ['intro','region','symptom','detail','result'].indexOf(d.view) >= 0) ? d.view : 'intro';
+  } catch (e) { return 'intro'; }
+}
+
 const $ = id => document.getElementById(id);
 
 /* ---------- 进度 ---------- */
@@ -44,6 +65,7 @@ function showView(name) {
   $('bottomBar').style.display = (name === 'region' || name === 'symptom' || name === 'detail') ? 'block' : 'none';
   document.body.dataset.view = name;
   updateProgress();
+  persist();
 }
 
 /* ---------- 0. 首页 ---------- */
@@ -59,7 +81,7 @@ function renderIntro() {
       ${o.l}<span class="chip-d">${o.d||''}</span>
     </button>`).join('');
   document.querySelectorAll('#genderBox .chip').forEach(btn => {
-    btn.onclick = () => { state.gender = btn.dataset.g; renderIntro(); };
+    btn.onclick = () => { state.gender = btn.dataset.g; renderIntro(); persist(); };
   });
 }
 
@@ -85,6 +107,7 @@ function renderRegion() {
       renderRegion();
       renderSymptoms();      // 部位变化后，立即刷新症状列表
       updateNextBtn();
+      persist();
     };
   });
   updateNextBtn();
@@ -111,7 +134,7 @@ function renderSymptoms() {
       const id = btn.dataset.id;
       if (state.symptomIds.includes(id)) state.symptomIds = state.symptomIds.filter(x => x !== id);
       else state.symptomIds.push(id);
-      renderSymptoms(); updateSymBtn();
+      renderSymptoms(); updateSymBtn(); persist();
     };
   });
   updateSymBtn();
@@ -183,6 +206,7 @@ function renderDetail() {
           btn.classList.add('sel');
         }
       }
+      persist();
     };
   });
 }
@@ -397,20 +421,61 @@ function resetAll() {
   state.symptomIds = [];
   state.answers = {};
   state.gender = 'default';
+  try { localStorage.removeItem(STATE_KEY); } catch (e) {}
   renderIntro();
   renderRegion();
   showView('intro');
   window.scrollTo(0,0);
 }
 
+/* ---------- 安装到手机 ---------- */
+let deferredPrompt = null;
+function isStandalone() {
+  return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
+}
+function updateInstallBtn() {
+  const btn = $('installBtn');
+  if (!btn) return;
+  btn.style.display = isStandalone() ? 'none' : 'block';
+}
+function bindInstall() {
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    updateInstallBtn();
+  });
+  window.addEventListener('appinstalled', () => { updateInstallBtn(); });
+  $('installBtn').onclick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (choice.outcome === 'accepted') updateInstallBtn();
+      else $('installGuide').style.display = 'flex';
+    } else {
+      // iOS 等无系统弹窗的浏览器：显示手动指引
+      $('installGuide').style.display = 'flex';
+    }
+  };
+  $('installGuideClose').onclick = () => { $('installGuide').style.display = 'none'; };
+  updateInstallBtn();
+}
+
 /* ---------- 启动 ---------- */
 window.addEventListener('DOMContentLoaded', () => {
+  const savedView = restoreState();
   renderIntro();
   renderRegion();
   renderSymptoms();
-  renderDetail();
+  if (state.symptomIds.length) renderDetail();
   bindNav();
-  showView('intro');
+  bindInstall();
+  if (savedView === 'result' && state.symptomIds.length) {
+    goResult();
+  } else {
+    showView(savedView);
+  }
+  if (savedView === 'intro') window.scrollTo(0,0);
 });
 
 /* 注册 Service Worker（PWA 离线可用） */
