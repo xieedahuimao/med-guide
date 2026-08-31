@@ -410,6 +410,7 @@ function bindNav() {
     if (viewName === 'symptom') showView('region');
     else if (viewName === 'detail') showView('symptom');
     else if (viewName === 'result') { renderDetail(); showView('detail'); }
+    else if (viewName === 'region') { showView('intro'); }
     window.scrollTo(0,0);
   };
 }
@@ -437,6 +438,7 @@ function updateInstallBtn() {
   btn.style.display = isStandalone() ? 'none' : 'block';
 }
 function bindInstall() {
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     deferredPrompt = e;
@@ -445,13 +447,18 @@ function bindInstall() {
   window.addEventListener('appinstalled', () => { updateInstallBtn(); });
   $('installBtn').onclick = async () => {
     if (deferredPrompt) {
+      // 安卓 Chrome：直接弹系统安装框
       deferredPrompt.prompt();
       const choice = await deferredPrompt.userChoice;
       deferredPrompt = null;
-      if (choice.outcome === 'accepted') updateInstallBtn();
-      else $('installGuide').style.display = 'flex';
+      updateInstallBtn();
+    } else if (isIOS) {
+      $('installGuideText').innerHTML =
+        '<b>iPhone 安装步骤：</b><br>1. 点 Safari 底部中间的「<b>分享</b>」按钮（方框带向上箭头的图标）；<br>2. 在弹出菜单里往下找，点「<b>添加到主屏幕</b>」；<br>3. 点右上角「<b>添加</b>」，就装好了。<br><br>（苹果系统规定只能用这个方法装，任何网页都不能直接弹安装框。）';
+      $('installGuide').style.display = 'flex';
     } else {
-      // iOS 等无系统弹窗的浏览器：显示手动指引
+      $('installGuideText').innerHTML =
+        '<b>安卓安装步骤：</b><br>1. 点浏览器右上角的「<b>⋮</b>」（三个点）菜单；<br>2. 选「<b>添加到主屏幕</b>」或「<b>安装应用</b>」。<br><br>（如果没看到这个选项，多浏览一会儿页面，或用 Chrome 浏览器打开再试。）';
       $('installGuide').style.display = 'flex';
     }
   };
