@@ -489,9 +489,15 @@ window.addEventListener('DOMContentLoaded', () => {
   if (savedView === 'intro') window.scrollTo(0,0);
 });
 
-/* 注册 Service Worker（PWA 离线可用） */
+/* 注册 Service Worker（PWA 离线可用 + 自动更新到最新版） */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      reg.update();
+    }).catch(() => {});
+    // 新版 Service Worker 接管时自动刷新，确保用户看到的总是最新版
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
   });
 }
