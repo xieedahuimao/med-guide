@@ -150,16 +150,21 @@ body[data-view="detail"] #nextBtn, body[data-view="detail"] #symNext { display: 
   padding: 14px; margin-bottom: 12px; border-left: 4px solid var(--primary-2);
 }
 .med-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-.med-name { font-weight: 700; font-size: 17px; color: var(--primary); text-decoration: none; }
-.med-name .buy { font-size: 12px; font-weight: 600; color: #fff; background: var(--primary); padding: 1px 6px; border-radius: 6px; margin-left: 4px; }
+.med-name { font-weight: 700; font-size: 17px; color: var(--ink); cursor: pointer; border-bottom: 1px dashed var(--muted); padding-bottom: 1px; }
+.med-name .copy-ic { font-size: 12px; color: var(--muted); margin-left: 3px; }
 .med-type { font-size: 12px; color: var(--primary); background: #eef4ff; padding: 3px 8px; border-radius: 999px; }
-.med-alias { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.med-buyrow { display: flex; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+.med-buyrow .buy { display: inline-block; font-size: 13px; font-weight: 700; color: #fff; background: var(--primary); padding: 6px 12px; border-radius: 8px; text-decoration: none; }
+.med-buyrow .copy-hint { font-size: 12px; color: var(--muted); }
 .med-intent { font-size: 14px; margin: 4px 0; }
 .med-form { font-size: 14px; margin: 8px 0; background: #f6f9ff; padding: 8px 10px; border-radius: 10px; }
 .med-ct { font-size: 14px; font-weight: 700; margin-top: 8px; color: #9b1c1c; }
 .ct-list { margin: 6px 0 0; padding-left: 18px; font-size: 14px; }
 .ct-list li { margin: 4px 0; }
 .med-src { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+/* 复制提示 toast */
+.toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: rgba(20,28,40,.88); color: #fff; font-size: 14px; padding: 10px 16px; border-radius: 10px; z-index: 999; max-width: 82%; text-align: center; display: none; }
 
 .note { background: var(--card); border-left: 3px solid var(--good); border-radius: 10px; padding: 10px 12px; margin: 8px 0; font-size: 14px; box-shadow: var(--shadow); }
 .note.remove { border-left: 4px solid var(--danger); background: #fdeaea; color: #b91c1c; font-weight: 700; box-shadow: none; }
