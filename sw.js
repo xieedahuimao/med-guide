@@ -1,6 +1,7 @@
-/* 健康用药小助手 · Service Worker（离线缓存 + PWA） */
-const CACHE = 'med-guide-v1';
-const ASSETS = [
+/* 健康用药小助手 · Service Worker
+   网络优先：先拿最新内容，断网时回退缓存（保证 PWA 可安装、可离线） */
+const CACHE = 'med-guide-v2';
+const CORE = [
   './',
   './index.html',
   './css/style.css',
@@ -16,7 +17,7 @@ const ASSETS = [
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())
   );
 });
 
@@ -31,12 +32,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(hit =>
-      hit || fetch(e.request).then(res => {
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
-        return res;
-      }).catch(() => caches.match('./index.html'))
+    fetch(e.request).then(res => {
+      const copy = res.clone();
+      caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+      return res;
+    }).catch(() =>
+      caches.match(e.request).then(hit => hit || caches.match('./index.html'))
     )
   );
 });
