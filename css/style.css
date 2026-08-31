@@ -150,7 +150,8 @@ body[data-view="detail"] #nextBtn, body[data-view="detail"] #symNext { display: 
   padding: 14px; margin-bottom: 12px; border-left: 4px solid var(--primary-2);
 }
 .med-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-.med-name { font-weight: 700; font-size: 17px; }
+.med-name { font-weight: 700; font-size: 17px; color: var(--primary); text-decoration: none; }
+.med-name .buy { font-size: 12px; font-weight: 600; color: #fff; background: var(--primary); padding: 1px 6px; border-radius: 6px; margin-left: 4px; }
 .med-type { font-size: 12px; color: var(--primary); background: #eef4ff; padding: 3px 8px; border-radius: 999px; }
 .med-alias { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 .med-intent { font-size: 14px; margin: 4px 0; }
@@ -161,7 +162,7 @@ body[data-view="detail"] #nextBtn, body[data-view="detail"] #symNext { display: 
 .med-src { font-size: 12px; color: var(--muted); margin-top: 8px; }
 
 .note { background: var(--card); border-left: 3px solid var(--good); border-radius: 10px; padding: 10px 12px; margin: 8px 0; font-size: 14px; box-shadow: var(--shadow); }
-.note.remove { border-left-color: var(--danger); color: #9b1c1c; }
+.note.remove { border-left: 4px solid var(--danger); background: #fdeaea; color: #b91c1c; font-weight: 700; box-shadow: none; }
 .care { font-size: 14px; margin: 6px 0; }
 .callout { background: var(--soft); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-top: 10px; color: var(--muted); }
 
