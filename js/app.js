@@ -283,7 +283,7 @@ function renderResult(res) {
   } else {
     res.meds.forEach(m => {
       const kw = medKeyword(m.name);
-      const shopUrl = 'https://i.meituan.com/s/' + encodeURIComponent(kw);
+      const shopUrl = 'https://search.jd.com/Search?keyword=' + encodeURIComponent(kw);
       html += `<div class="med-card">
         <div class="med-head"><a class="med-name" href="${shopUrl}" target="_blank" rel="noopener">${m.name} <span class="buy">去买 ↗</span></a><span class="med-type">${MEDS[m.id].type}</span></div>
         <div class="med-intent">用于：${m.intent}</div>
@@ -427,46 +427,6 @@ function resetAll() {
   window.scrollTo(0,0);
 }
 
-/* ---------- 安装到手机 ---------- */
-let deferredPrompt = null;
-function isStandalone() {
-  return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
-}
-function updateInstallBtn() {
-  const btn = $('installBtn');
-  if (!btn) return;
-  btn.style.display = isStandalone() ? 'none' : 'block';
-}
-function bindInstall() {
-  const ua = navigator.userAgent || '';
-  const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const isAndroid = /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua) || (window.innerWidth < 800 && !isIOS);
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    updateInstallBtn();
-  });
-  window.addEventListener('appinstalled', () => { updateInstallBtn(); });
-  $('installBtn').onclick = async () => {
-    if (deferredPrompt) {
-      // 支持的浏览器（多为 Chrome/Edge）：直接弹系统安装框
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      updateInstallBtn();
-    } else {
-      // 手机自带浏览器：系统不允许网页直接弹安装框，给出通用指引
-      $('installGuideText').innerHTML =
-        '<b>iPhone：</b>点 Safari 底部「<b>分享</b>」（方框带箭头）→「<b>添加到主屏幕</b>」→「添加」。<br><br>' +
-        '<b>安卓：</b>点浏览器「<b>菜单</b>」（右下/右上角，三个点或三条横线）→「<b>添加到主屏幕</b>」或「<b>添加到桌面</b>」。<br><br>' +
-        '（手机系统规定网页不能直接弹安装框，只能这样加到桌面；加好后桌面就有图标，以后点开就能用。）';
-      $('installGuide').style.display = 'flex';
-    }
-  };
-  $('installGuideClose').onclick = () => { $('installGuide').style.display = 'none'; };
-  updateInstallBtn();
-}
-
 /* ---------- 启动 ---------- */
 window.addEventListener('DOMContentLoaded', () => {
   const savedView = restoreState();
@@ -475,7 +435,6 @@ window.addEventListener('DOMContentLoaded', () => {
   renderSymptoms();
   if (state.symptomIds.length) renderDetail();
   bindNav();
-  bindInstall();
   if (savedView === 'result' && state.symptomIds.length) {
     goResult();
   } else {
