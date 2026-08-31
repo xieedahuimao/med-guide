@@ -258,8 +258,10 @@ function renderResult(res) {
     html += `<div class="empty">这类情况通常以观察和就医为主，暂不推荐自行服用药物。<br>${careText(res)}</div>`;
   } else {
     res.meds.forEach(m => {
+      const kw = medKeyword(m.name);
+      const shopUrl = 'https://www.meituan.com/s/' + encodeURIComponent(kw);
       html += `<div class="med-card">
-        <div class="med-head"><span class="med-name">${m.name}</span><span class="med-type">${MEDS[m.id].type}</span></div>
+        <div class="med-head"><a class="med-name" href="${shopUrl}" target="_blank" rel="noopener">${m.name} <span class="buy">去买 ↗</span></a><span class="med-type">${MEDS[m.id].type}</span></div>
         ${m.alias ? `<div class="med-alias">${m.alias}</div>` : ''}
         <div class="med-intent">用于：${m.intent}</div>
         <div class="med-form"><b>用法用量：</b>${m.form}</div>
@@ -274,10 +276,14 @@ function renderResult(res) {
   // 用药顺序/注意事项
   const timedNotes = res.notes.filter(n => n.type === 'info');
   const removedNotes = res.notes.filter(n => n.type === 'warn');
-  if (timedNotes.length || removedNotes.length) {
+  if (removedNotes.length) {
+    html += `<div class="section"><div class="sec-title">🚫 不能一起吃的药</div>`;
+    removedNotes.forEach(n => html += `<div class="note remove"><b>🚫 ${n.med} 不能一起吃</b><br>${n.text}</div>`);
+    html += `</div>`;
+  }
+  if (timedNotes.length) {
     html += `<div class="section"><div class="sec-title">⏱️ 用药顺序与注意</div>`;
     timedNotes.forEach(n => html += `<div class="note">🔹 <b>${n.a||''}</b>${n.b?' 与 <b>'+n.b+'</b>':''}：${n.text}</div>`);
-    removedNotes.forEach(n => html += `<div class="note remove">🚫 已自动避开：<b>${n.med}</b>（${n.text}）</div>`);
     html += `</div>`;
   }
 
@@ -355,6 +361,11 @@ function hospCard(hosp, depts) {
   </div>`;
 }
 
+/* 药品名去掉括号后缀，作为美团搜索关键词 */
+function medKeyword(name) {
+  return name.replace(/[（(][^）)]*[）)]/g, '').trim();
+}
+
 function careText(res) {
   const cares = new Set();
   state.symptomIds.forEach(id => {
@@ -401,3 +412,10 @@ window.addEventListener('DOMContentLoaded', () => {
   bindNav();
   showView('intro');
 });
+
+/* 注册 Service Worker（PWA 离线可用） */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
