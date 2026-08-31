@@ -283,7 +283,7 @@ function renderResult(res) {
   } else {
     res.meds.forEach(m => {
       const kw = medKeyword(m.name);
-      const shopUrl = 'https://www.meituan.com/s/' + encodeURIComponent(kw);
+      const shopUrl = 'https://i.meituan.com/s/' + encodeURIComponent(kw);
       html += `<div class="med-card">
         <div class="med-head"><a class="med-name" href="${shopUrl}" target="_blank" rel="noopener">${m.name} <span class="buy">去买 ↗</span></a><span class="med-type">${MEDS[m.id].type}</span></div>
         <div class="med-intent">用于：${m.intent}</div>
@@ -454,17 +454,12 @@ function bindInstall() {
       const choice = await deferredPrompt.userChoice;
       deferredPrompt = null;
       updateInstallBtn();
-    } else if (isIOS) {
-      $('installGuideText').innerHTML =
-        '<b>iPhone 安装步骤：</b><br>1. 点 Safari 底部中间的「<b>分享</b>」按钮（方框带向上箭头）；<br>2. 菜单里选「<b>添加到主屏幕</b>」；<br>3. 点右上角「<b>添加</b>」。<br><br>（苹果规定只能这样装，任何网页都不能直接弹安装框。）';
-      $('installGuide').style.display = 'flex';
-    } else if (isAndroid) {
-      $('installGuideText').innerHTML =
-        '<b>安卓手机安装步骤：</b><br>1. 点你浏览器里的「<b>菜单</b>」按钮（一般在右下角或右上角，图标是三个点 / 三条横线）；<br>2. 在菜单里选「<b>添加到主屏幕</b>」或「<b>添加到桌面</b>」；<br>3. 按提示确认，桌面就有图标了。';
-      $('installGuide').style.display = 'flex';
     } else {
+      // 手机自带浏览器：系统不允许网页直接弹安装框，给出通用指引
       $('installGuideText').innerHTML =
-        '<b>请用手机打开这个网址</b>，再用手机浏览器添加到主屏幕。<br><br>网址：<br><b>https://xieedahuimao.github.io/med-guide/</b>';
+        '<b>iPhone：</b>点 Safari 底部「<b>分享</b>」（方框带箭头）→「<b>添加到主屏幕</b>」→「添加」。<br><br>' +
+        '<b>安卓：</b>点浏览器「<b>菜单</b>」（右下/右上角，三个点或三条横线）→「<b>添加到主屏幕</b>」或「<b>添加到桌面</b>」。<br><br>' +
+        '（手机系统规定网页不能直接弹安装框，只能这样加到桌面；加好后桌面就有图标，以后点开就能用。）';
       $('installGuide').style.display = 'flex';
     }
   };
