@@ -40,7 +40,19 @@
       <div class="disc">默认按“成年人、既往体健”处理。本工具<strong>仅作科普参考，不能替代医生诊断</strong>；用药请以药品说明和医师/药师意见为准。</div>
 
       <button id="startBtn" class="btn btn-primary">开始自测</button>
+      <button id="installBtn" class="btn btn-ghost" style="display:none;margin-top:10px">📲 安装到手机桌面</button>
     </section>
+
+    <!-- 安装指引弹窗 -->
+    <div id="installGuide" class="modal" style="display:none">
+      <div class="modal-card">
+        <div class="modal-title">📲 装到手机桌面</div>
+        <div class="modal-body">
+          <p id="installGuideText">点浏览器底部的<b>「分享」</b>按钮（一个方框带箭头的图标），然后在菜单里选<b>「添加到主屏幕」</b>，就能像 App 一样从桌面打开了。</p>
+        </div>
+        <button id="installGuideClose" class="btn btn-primary">知道了</button>
+      </div>
+    </div>
 
     <!-- ============ 1. 选部位 ============ -->
     <section id="region" style="display:none">
