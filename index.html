@@ -5,12 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#3d7bd9">
   <title>健康用药小助手 · 常见不适参考</title>
-  <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="用药小助手">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-view="intro">
@@ -40,19 +35,7 @@
       <div class="disc">默认按“成年人、既往体健”处理。本工具<strong>仅作科普参考，不能替代医生诊断</strong>；用药请以药品说明和医师/药师意见为准。</div>
 
       <button id="startBtn" class="btn btn-primary">开始自测</button>
-      <button id="installBtn" class="btn btn-ghost" style="display:none;margin-top:10px">📲 安装到手机桌面</button>
     </section>
-
-    <!-- 安装指引弹窗 -->
-    <div id="installGuide" class="modal" style="display:none">
-      <div class="modal-card">
-        <div class="modal-title">📲 装到手机桌面</div>
-        <div class="modal-body">
-          <p id="installGuideText">点浏览器底部的<b>「分享」</b>按钮（一个方框带箭头的图标），然后在菜单里选<b>「添加到主屏幕」</b>，就能像 App 一样从桌面打开了。</p>
-        </div>
-        <button id="installGuideClose" class="btn btn-primary">知道了</button>
-      </div>
-    </div>
 
     <!-- ============ 1. 选部位 ============ -->
     <section id="region" style="display:none">
