@@ -195,6 +195,13 @@ body[data-view="detail"] #nextBtn, body[data-view="detail"] #symNext { display: 
 .h-dept { font-size: 13px; margin-top: 4px; }
 .h-strong { font-size: 13px; margin-top: 2px; color: var(--good); }
 
+/* ---------- 安装弹窗 ---------- */
+.modal { position: fixed; inset: 0; background: rgba(20,28,40,.45); display: flex; align-items: center; justify-content: center; z-index: 99; padding: 24px; }
+.modal-card { background: #fff; border-radius: 16px; padding: 22px; width: 100%; max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+.modal-title { font-weight: 700; font-size: 17px; margin-bottom: 10px; }
+.modal-body { font-size: 15px; line-height: 1.7; color: var(--ink); margin-bottom: 16px; }
+.modal-body p { margin: 8px 0; }
+
 @media (min-width: 520px) {
   .app { padding-left: 20px; padding-right: 20px; }
 }
