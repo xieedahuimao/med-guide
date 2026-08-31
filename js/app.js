@@ -285,7 +285,11 @@ function renderResult(res) {
       const kw = medKeyword(m.name);
       const shopUrl = 'https://search.jd.com/Search?keyword=' + encodeURIComponent(kw);
       html += `<div class="med-card">
-        <div class="med-head"><a class="med-name" href="${shopUrl}" target="_blank" rel="noopener">${m.name} <span class="buy">去买 ↗</span></a><span class="med-type">${MEDS[m.id].type}</span></div>
+        <div class="med-head">
+          <span class="med-name" data-copy="${kw}">${m.name} <span class="copy-ic">⧉</span></span>
+          <span class="med-type">${MEDS[m.id].type}</span>
+        </div>
+        <div class="med-buyrow"><a class="buy" href="${shopUrl}" target="_blank" rel="noopener">去京东买 ↗</a><span class="copy-hint">点药名可复制，去美团/淘宝自己搜</span></div>
         <div class="med-intent">用于：${m.intent}</div>
         <div class="med-form"><b>用法用量：</b>详细见说明书</div>
         <div class="med-ct"><b>别用的情况：</b></div>
@@ -383,10 +387,50 @@ function hospCard(hosp, depts) {
   </div>`;
 }
 
-/* 药品名去掉括号后缀，作为美团搜索关键词 */
+/* 药品名去掉括号后缀，作为搜索关键词 */
 function medKeyword(name) {
   return name.replace(/[（(][^）)]*[）)]/g, '').trim();
 }
+
+/* 点击药名 → 自动复制 */
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(() => legacyCopy(text));
+  } else {
+    legacyCopy(text);
+  }
+}
+function legacyCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function showToast(msg) {
+  let t = $('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.className = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.display = 'none'; }, 1600);
+}
+/* 事件委托：点 [data-copy] 复制 */
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-copy]');
+  if (!el) return;
+  const text = el.getAttribute('data-copy');
+  copyText(text);
+  showToast('✅ 已复制药名：' + text);
+});
 
 function careText(res) {
   const cares = new Set();
